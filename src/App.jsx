@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
-import { getAreaData } from './api'
+import { getAreaData } from './api/index'
 
 import './App.css'
+import { AreaList } from './Components/AreaList';
+import SearchBar from './Components/SearchBar.jsx';
 
 function App() {
 
   const [areas, setAreas] = useState([]);
+  const [postcode, setPostcode]= useState('BB10')
 
   const load = async () => {
     try {
-      const areaData = await getAreaData()
-
+      const areaData = await getAreaData(postcode) 
       areas.concat(areaData);
-  
-      setAreas(areas);
+      setAreas(areaData);
+      
     } catch (error) {
       window.alert("todo: fix app")
     }
@@ -21,12 +23,15 @@ function App() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [postcode]);
 
   return (
     <div className="App">
       <h1>Postcoders</h1>
-      <h2>{`Areas for BB10: ${areas.length}`}</h2>
+      <h2>{`Areas for ${postcode}: ${areas.length}`}</h2>
+
+      <SearchBar setPostcode={setPostcode}/>
+      <AreaList areas={areas}/>
     </div>
   )
 }
